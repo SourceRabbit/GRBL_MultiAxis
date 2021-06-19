@@ -36,9 +36,9 @@
 #define DEFAULT_A_MAX_TRAVEL                0           // $133 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
 
 // Backlash
-#define DEFAULT_X_BACKLASH                  0.1             // $180 mm 
-#define DEFAULT_Y_BACKLASH                  0.1             // $181 mm
-#define DEFAULT_Z_BACKLASH                  0.08            // $182 mm
+#define DEFAULT_X_BACKLASH                  0.072            // $180 mm 
+#define DEFAULT_Y_BACKLASH                  0.06            // $181 mm
+#define DEFAULT_Z_BACKLASH                  0.06            // $182 mm
 #define DEFAULT_A_BACKLASH                  0               // $183 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
 
 // SPEEDS AND ACCELLERATIONS
