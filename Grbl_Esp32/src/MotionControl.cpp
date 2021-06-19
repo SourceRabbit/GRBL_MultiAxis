@@ -31,6 +31,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#define DIR_POSITIV     0
+#define DIR_NEGATIV     1
+
 SquaringMode ganged_mode = SquaringMode::Dual;
 
 // this allows kinematics to be used.
@@ -50,6 +53,8 @@ void mc_line_kins(float* target, plan_line_data_t* pl_data, float* position) {
 // segments, must pass through this routine before being passed to the planner. The seperation of
 // mc_line and plan_buffer_line is done primarily to place non-planner-type functions from being
 // in the planner and to let backlash compensation or canned cycle integration simple and direct.
+static float target_prev[MAX_N_AXIS] = {0.0};
+static uint8_t dir_negative[MAX_N_AXIS] = {DIR_NEGATIV};
 
 void mc_line(float* target, plan_line_data_t* pl_data) {
     // If enabled, check for soft limit violations. Placed here all line motions are picked up
@@ -64,6 +69,32 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
     if (sys.state == State::CheckMode) {
         return;
     }
+
+
+    // Backlash compensation
+    for (int i = 0; i < MAX_N_AXIS; i++) {
+        // Move positive?
+        if (target[i] > target_prev[i]) {
+            // Last move negative
+            if (dir_negative[i] == DIR_NEGATIV) {
+                dir_negative[i] = DIR_POSITIV;
+                target[i] += axis_settings[i]->backlash->get();
+            }
+        }// Move negative?
+        else if (target[i] < target_prev[i]) {
+            // Last move positive
+            if (dir_negative[i] == DIR_POSITIV) {
+                dir_negative[i] = DIR_NEGATIV;
+                target[i] -= axis_settings[i]->backlash->get();
+            }
+        }
+
+        target_prev[i] = target[i];
+    }
+
+
+
+
     // NOTE: Backlash compensation may be installed here. It will need direction info to track when
     // to insert a backlash line motion(s) before the intended line motion and will require its own
     // plan_check_full_buffer() and check for system abort loop. Also for position reporting
