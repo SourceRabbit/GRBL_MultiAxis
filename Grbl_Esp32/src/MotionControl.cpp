@@ -98,7 +98,6 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
 
 
 
-
     // NOTE: Backlash compensation may be installed here. It will need direction info to track when
     // to insert a backlash line motion(s) before the intended line motion and will require its own
     // plan_check_full_buffer() and check for system abort loop. Also for position reporting
