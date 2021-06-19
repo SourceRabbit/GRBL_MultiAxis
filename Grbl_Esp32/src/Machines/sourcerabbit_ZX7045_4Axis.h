@@ -4,55 +4,55 @@
 #define MACHINE_NAME            "ΖΧ7045"
 
 #ifdef N_AXIS
-	#undef N_AXIS
+#undef N_AXIS
 #endif
 #define N_AXIS 4
 
 
-#define DEFAULT_STEP_PULSE_MICROSECONDS 	8  		// $0
-#define DEFAULT_STEPPER_IDLE_LOCK_TIME 		255		// $1 KEEP MOTORS ALWAYS ON
+#define DEFAULT_STEP_PULSE_MICROSECONDS     8       // $0
+#define DEFAULT_STEPPER_IDLE_LOCK_TIME      255     // $1 KEEP MOTORS ALWAYS ON
 
-#define DEFAULT_JUNCTION_DEVIATION 			0.010  	// $11 mm
-#define DEFAULT_ARC_TOLERANCE 				0.005  	// $12 mm
+#define DEFAULT_JUNCTION_DEVIATION          0.010   // $11 mm
+#define DEFAULT_ARC_TOLERANCE               0.005   // $12 mm
 
 
 
-#define DEFAULT_DIRECTION_INVERT_MASK 		4
-#define DEFAULT_INVERT_LIMIT_PINS 			0
-#define DEFAULT_INVERT_PROBE_PIN 			0
+#define DEFAULT_DIRECTION_INVERT_MASK       4
+#define DEFAULT_INVERT_LIMIT_PINS           0
+#define DEFAULT_INVERT_PROBE_PIN            0
 
-#define DEFAULT_SOFT_LIMIT_ENABLE 			1
-#define DEFAULT_HARD_LIMIT_ENABLE 			1
-#define DEFAULT_HOMING_ENABLE 				1
-#define DEFAULT_HOMING_DIR_MASK 			3  		// $23 move positive dir Z, negative X,Y
-#define DEFAULT_HOMING_FEED_RATE 			500.0  	// $24 mm/min
-#define DEFAULT_HOMING_SEEK_RATE 			1500.0  // $25 mm/min
-#define DEFAULT_HOMING_PULLOFF 				2.0  	// $27 
+#define DEFAULT_SOFT_LIMIT_ENABLE           1
+#define DEFAULT_HARD_LIMIT_ENABLE           1
+#define DEFAULT_HOMING_ENABLE               1
+#define DEFAULT_HOMING_DIR_MASK             3       // $23 move positive dir Z, negative X,Y
+#define DEFAULT_HOMING_FEED_RATE            500.0   // $24 mm/min
+#define DEFAULT_HOMING_SEEK_RATE            2000.0  // $25 mm/min
+#define DEFAULT_HOMING_PULLOFF              2.0     // $27 
 
 
 // TRAVEL
-#define DEFAULT_X_MAX_TRAVEL 				488.0  	// $130 mm 
-#define DEFAULT_Y_MAX_TRAVEL 				220.0  	// $131 mm
-#define DEFAULT_Z_MAX_TRAVEL 				272.0  	// $132 mm
-#define DEFAULT_A_MAX_TRAVEL 				0  		// $133 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
+#define DEFAULT_X_MAX_TRAVEL                500.0   // $130 mm 
+#define DEFAULT_Y_MAX_TRAVEL                220.0   // $131 mm
+#define DEFAULT_Z_MAX_TRAVEL                272.0   // $132 mm
+#define DEFAULT_A_MAX_TRAVEL                0       // $133 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
 
 // SPEEDS AND ACCELLERATIONS
 // DRIVERS MICROSTEPPING IS SET to x10
-#define DEFAULT_X_STEPS_PER_MM 				400.0
-#define DEFAULT_X_MAX_RATE 					6000.0  // mm/min
-#define DEFAULT_X_ACCELERATION 				140.0
+#define DEFAULT_X_STEPS_PER_MM              400.0
+#define DEFAULT_X_MAX_RATE                  6000.0  // mm/min
+#define DEFAULT_X_ACCELERATION              140.0
 
-#define DEFAULT_Y_STEPS_PER_MM 				400.0
-#define DEFAULT_Y_MAX_RATE 					6000.0  // mm/min
-#define DEFAULT_Y_ACCELERATION 				140.0
+#define DEFAULT_Y_STEPS_PER_MM              400.0
+#define DEFAULT_Y_MAX_RATE                  6000.0  // mm/min
+#define DEFAULT_Y_ACCELERATION              140.0
 
-#define DEFAULT_Z_STEPS_PER_MM 				400.0
-#define DEFAULT_Z_MAX_RATE 					4000.0  // mm/min
-#define DEFAULT_Z_ACCELERATION 				100.0
+#define DEFAULT_Z_STEPS_PER_MM              400.0
+#define DEFAULT_Z_MAX_RATE                  3000.0  // mm/min
+#define DEFAULT_Z_ACCELERATION              80.0
 
-#define DEFAULT_A_STEPS_PER_MM 				26.666	// Steps / Degree
-#define DEFAULT_A_MAX_RATE 					72000.0  // degrees/min
-#define DEFAULT_A_ACCELERATION 				720.0
+#define DEFAULT_A_STEPS_PER_MM              26.666 // Steps / Degree
+#define DEFAULT_A_MAX_RATE                  72000.0  // degrees/min
+#define DEFAULT_A_ACCELERATION              720.0
 
 
 // SourceRabbit CNC Motherboard v1.1 Pinout
