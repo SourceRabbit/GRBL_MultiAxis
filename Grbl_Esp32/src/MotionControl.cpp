@@ -73,23 +73,27 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
 
     // Backlash compensation
     for (int i = 0; i < MAX_N_AXIS; i++) {
-        // Move positive?
-        if (target[i] > target_prev[i]) {
-            // Last move negative
-            if (dir_negative[i] == DIR_NEGATIV) {
-                dir_negative[i] = DIR_POSITIV;
-                target[i] += axis_settings[i]->backlash->get();
-            }
-        }// Move negative?
-        else if (target[i] < target_prev[i]) {
-            // Last move positive
-            if (dir_negative[i] == DIR_POSITIV) {
-                dir_negative[i] = DIR_NEGATIV;
-                target[i] -= axis_settings[i]->backlash->get();
-            }
-        }
 
-        target_prev[i] = target[i];
+        if (axis_settings[i]->backlash->get() > 0) {
+
+            // Move positive?
+            if (target[i] > target_prev[i]) {
+                // Last move negative
+                if (dir_negative[i] == DIR_NEGATIV) {
+                    dir_negative[i] = DIR_POSITIV;
+                    target[i] = target[i] + axis_settings[i]->backlash->get();
+                }
+            }// Move negative?
+            else if (target[i] < target_prev[i]) {
+                // Last move positive
+                if (dir_negative[i] == DIR_POSITIV) {
+                    dir_negative[i] = DIR_NEGATIV;
+                    target[i] = target[i] - axis_settings[i]->backlash->get();
+                }
+            }
+
+            target_prev[i] = target[i];
+        }
     }
 
 
