@@ -439,6 +439,7 @@ public:
     FloatSetting* run_current;
     FloatSetting* hold_current;
     FloatSetting* home_mpos;
+    FloatSetting* backlash;
     IntSetting*   microsteps;
     IntSetting*   stallguard;
 
