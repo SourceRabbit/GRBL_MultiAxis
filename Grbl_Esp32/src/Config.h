@@ -7,8 +7,8 @@
   Copyright (c) 2012-2016 Sungeun K. Jeon for Gnea Research LLC
   Copyright (c) 2009-2011 Simen Svale Skogsrud
 
-	2018 -	Bart Dring This file was modifed for use on the ESP32
-		CPU. Do not use this with Grbl for atMega328P
+        2018 -	Bart Dring This file was modifed for use on the ESP32
+                CPU. Do not use this with Grbl for atMega328P
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 
   You should have received a copy of the GNU General Public License
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 // This file contains compile-time configurations for Grbl's internal system. For the most part,
 // users will not need to directly modify these, but they are here for specific needs, i.e.
@@ -35,7 +35,7 @@ ESP 32 Notes
 
 Some features should not be changed. See notes below.
 
-*/
+ */
 
 #include <Arduino.h>
 
@@ -70,9 +70,9 @@ Some features should not be changed. See notes below.
 
 // Adjust exclusive definitions for steppers
 #ifdef USE_I2S_STEPS
-#    ifdef USE_RMT_STEPS
-#        undef USE_RMT_STEPS
-#    endif
+#ifdef USE_RMT_STEPS
+#undef USE_RMT_STEPS
+#endif
 #endif
 
 const int MAX_N_AXIS = 6;
@@ -80,11 +80,11 @@ const int MAX_N_AXIS = 6;
 // Number of axes defined (steppers, servos, etc) (valid range: 3 to 6)
 // Even if your machine only uses less than the minimum of 3, you should select 3
 #ifndef N_AXIS
-#    define N_AXIS 3
+#define N_AXIS 3
 #endif
 
 #ifndef LIMIT_MASK
-#    define LIMIT_MASK B0
+#define LIMIT_MASK B0
 #endif
 
 // Serial baud rate
@@ -103,7 +103,7 @@ const int MAX_N_AXIS = 6;
 //#define ENABLE_WIFI  //enable wifi
 
 #if defined(ENABLE_WIFI) || defined(ENABLE_BLUETOOTH)
-#    define WIFI_OR_BLUETOOTH
+#define WIFI_OR_BLUETOOTH
 #endif
 
 #define ENABLE_HTTP                //enable HTTP and all related services
@@ -132,32 +132,32 @@ const int MAX_N_AXIS = 6;
 //CONFIGURE_EYECATCH_END (DO NOT MODIFY THIS LINE)
 
 #ifdef ENABLE_AUTHENTICATION
-const char* const DEFAULT_ADMIN_PWD   = "admin";
-const char* const DEFAULT_USER_PWD    = "user";
+const char* const DEFAULT_ADMIN_PWD = "admin";
+const char* const DEFAULT_USER_PWD = "user";
 const char* const DEFAULT_ADMIN_LOGIN = "admin";
-const char* const DEFAULT_USER_LOGIN  = "user";
+const char* const DEFAULT_USER_LOGIN = "user";
 #endif
 
 //Radio Mode
 const int ESP_RADIO_OFF = 0;
-const int ESP_WIFI_STA  = 1;
-const int ESP_WIFI_AP   = 2;
-const int ESP_BT        = 3;
+const int ESP_WIFI_STA = 1;
+const int ESP_WIFI_AP = 2;
+const int ESP_BT = 3;
 
 //Default mode
 #ifdef ENABLE_WIFI
-#    ifdef CONNECT_TO_SSID
+#ifdef CONNECT_TO_SSID
 const int DEFAULT_RADIO_MODE = ESP_WIFI_STA;
-#    else
-const int DEFAULT_RADIO_MODE = ESP_WIFI_AP;
-#    endif  //CONNECT_TO_SSID
 #else
-#    undef ENABLE_NOTIFICATIONS
-#    ifdef ENABLE_BLUETOOTH
+const int DEFAULT_RADIO_MODE = ESP_WIFI_AP;
+#endif  //CONNECT_TO_SSID
+#else
+#undef ENABLE_NOTIFICATIONS
+#ifdef ENABLE_BLUETOOTH
 const int DEFAULT_RADIO_MODE = ESP_BT;
-#    else
+#else
 const int DEFAULT_RADIO_MODE = ESP_RADIO_OFF;
-#    endif
+#endif
 #endif
 
 // Define realtime command special characters. These characters are 'picked-off' directly from the
@@ -173,30 +173,30 @@ const int DEFAULT_RADIO_MODE = ESP_RADIO_OFF;
 // space, serial.c's RX ISR will need to be modified to accommodate the change.
 
 enum class Cmd : uint8_t {
-    Reset                 = 0x18,  // Ctrl-X
-    StatusReport          = '?',
-    CycleStart            = '~',
-    FeedHold              = '!',
-    SafetyDoor            = 0x84,
-    JogCancel             = 0x85,
-    DebugReport           = 0x86,  // Only when DEBUG enabled, sends debug report in '{}' braces.
-    FeedOvrReset          = 0x90,  // Restores feed override value to 100%.
-    FeedOvrCoarsePlus     = 0x91,
-    FeedOvrCoarseMinus    = 0x92,
-    FeedOvrFinePlus       = 0x93,
-    FeedOvrFineMinus      = 0x94,
-    RapidOvrReset         = 0x95,  // Restores rapid override value to 100%.
-    RapidOvrMedium        = 0x96,
-    RapidOvrLow           = 0x97,
-    RapidOvrExtraLow      = 0x98,  // *NOT SUPPORTED*
-    SpindleOvrReset       = 0x99,  // Restores spindle override value to 100%.
-    SpindleOvrCoarsePlus  = 0x9A,  // 154
+    Reset = 0x18, // Ctrl-X
+    StatusReport = '?',
+    CycleStart = '~',
+    FeedHold = '!',
+    SafetyDoor = 0x84,
+    JogCancel = 0x85,
+    DebugReport = 0x86, // Only when DEBUG enabled, sends debug report in '{}' braces.
+    FeedOvrReset = 0x90, // Restores feed override value to 100%.
+    FeedOvrCoarsePlus = 0x91,
+    FeedOvrCoarseMinus = 0x92,
+    FeedOvrFinePlus = 0x93,
+    FeedOvrFineMinus = 0x94,
+    RapidOvrReset = 0x95, // Restores rapid override value to 100%.
+    RapidOvrMedium = 0x96,
+    RapidOvrLow = 0x97,
+    RapidOvrExtraLow = 0x98, // *NOT SUPPORTED*
+    SpindleOvrReset = 0x99, // Restores spindle override value to 100%.
+    SpindleOvrCoarsePlus = 0x9A, // 154
     SpindleOvrCoarseMinus = 0x9B,
-    SpindleOvrFinePlus    = 0x9C,
-    SpindleOvrFineMinus   = 0x9D,
-    SpindleOvrStop        = 0x9E,
+    SpindleOvrFinePlus = 0x9C,
+    SpindleOvrFineMinus = 0x9D,
+    SpindleOvrStop = 0x9E,
     CoolantFloodOvrToggle = 0xA0,
-    CoolantMistOvrToggle  = 0xA1,
+    CoolantMistOvrToggle = 0xA1,
 };
 
 // If homing is enabled, homing init lock sets Grbl into an alarm state upon power up. This forces
@@ -207,7 +207,7 @@ enum class Cmd : uint8_t {
 // Number of homing cycles performed after when the machine initially jogs to limit switches.
 // This help in preventing overshoot and should improve repeatability. This value should be one or
 // greater.
-static const uint8_t NHomingLocateCycle = 1;  // Integer (1-128)
+static const uint8_t NHomingLocateCycle = 1; // Integer (1-128)
 
 // Enables single axis homing commands. $HX, $HY, and $HZ for X, Y, and Z-axis homing. The full homing
 // cycle is still invoked by the $H command. This is disabled by default. It's here only to address
@@ -295,25 +295,25 @@ static const uint8_t NHomingLocateCycle = 1;  // Integer (1-128)
 // allowable override values and the coarse and fine increments per command received. Please
 // note the allowable values in the descriptions following each define.
 namespace FeedOverride {
-    const int Default         = 100;  // 100%. Don't change this value.
-    const int Max             = 200;  // Percent of programmed feed rate (100-255). Usually 120% or 200%
-    const int Min             = 10;   // Percent of programmed feed rate (1-100). Usually 50% or 1%
-    const int CoarseIncrement = 10;   // (1-99). Usually 10%.
-    const int FineIncrement   = 1;    // (1-99). Usually 1%.
+    const int Default = 100; // 100%. Don't change this value.
+    const int Max = 200; // Percent of programmed feed rate (100-255). Usually 120% or 200%
+    const int Min = 10; // Percent of programmed feed rate (1-100). Usually 50% or 1%
+    const int CoarseIncrement = 10; // (1-99). Usually 10%.
+    const int FineIncrement = 1; // (1-99). Usually 1%.
 };
 namespace RapidOverride {
-    const int Default  = 100;  // 100%. Don't change this value.
-    const int Medium   = 50;   // Percent of rapid (1-99). Usually 50%.
-    const int Low      = 25;   // Percent of rapid (1-99). Usually 25%.
-    const int ExtraLow = 5;    // Percent of rapid (1-99). Usually 5%.  Not Supported
+    const int Default = 100; // 100%. Don't change this value.
+    const int Medium = 50; // Percent of rapid (1-99). Usually 50%.
+    const int Low = 25; // Percent of rapid (1-99). Usually 25%.
+    const int ExtraLow = 5; // Percent of rapid (1-99). Usually 5%.  Not Supported
 };
 
 namespace SpindleSpeedOverride {
-    const int Default         = 100;  // 100%. Don't change this value.
-    const int Max             = 200;  // Percent of programmed spindle speed (100-255). Usually 200%.
-    const int Min             = 10;   // Percent of programmed spindle speed (1-100). Usually 10%.
-    const int CoarseIncrement = 10;   // (1-99). Usually 10%.
-    const int FineIncrement   = 1;    // (1-99). Usually 1%.
+    const int Default = 100; // 100%. Don't change this value.
+    const int Max = 200; // Percent of programmed spindle speed (100-255). Usually 200%.
+    const int Min = 10; // Percent of programmed spindle speed (1-100). Usually 10%.
+    const int CoarseIncrement = 10; // (1-99). Usually 10%.
+    const int FineIncrement = 1; // (1-99). Usually 1%.
 }
 
 // When a M2 or M30 program end command is executed, most GCode states are restored to their defaults.
@@ -343,10 +343,10 @@ namespace SpindleSpeedOverride {
 // refreshes more often when its not doing anything important. With a good GUI, this data doesn't need
 // to be refreshed very often, on the order of a several seconds.
 // NOTE: WCO refresh must be 2 or greater. OVR refresh must be 1 or greater.
-const int REPORT_OVR_REFRESH_BUSY_COUNT = 20;  // (1-255)
-const int REPORT_OVR_REFRESH_IDLE_COUNT = 10;  // (1-255) Must be less than or equal to the busy count
-const int REPORT_WCO_REFRESH_BUSY_COUNT = 30;  // (2-255)
-const int REPORT_WCO_REFRESH_IDLE_COUNT = 10;  // (2-255) Must be less than or equal to the busy count
+const int REPORT_OVR_REFRESH_BUSY_COUNT = 20; // (1-255)
+const int REPORT_OVR_REFRESH_IDLE_COUNT = 10; // (1-255) Must be less than or equal to the busy count
+const int REPORT_WCO_REFRESH_BUSY_COUNT = 30; // (2-255)
+const int REPORT_WCO_REFRESH_IDLE_COUNT = 10; // (2-255) Must be less than or equal to the busy count
 
 // The temporal resolution of the acceleration management subsystem. A higher number gives smoother
 // acceleration, particularly noticeable on machines that run at very high feedrates, but may negatively
@@ -384,7 +384,7 @@ const int ACCELERATION_TICKS_PER_SECOND = 100;
 // Sets which axis the tool length offset is applied. Assumes the spindle is always parallel with
 // the selected axis with the tool oriented toward the negative direction. In other words, a positive
 // tool length offset value is subtracted from the current location.
-const int TOOL_LENGTH_OFFSET_AXIS = Z_AXIS;  // Default z-axis. Valid values are X_AXIS, Y_AXIS, or Z_AXIS.
+const int TOOL_LENGTH_OFFSET_AXIS = Z_AXIS; // Default z-axis. Valid values are X_AXIS, Y_AXIS, or Z_AXIS.
 
 // With this enabled, Grbl sends back an echo of the line it has received, which has been pre-parsed (spaces
 // removed, capitalized letters, no comments) and is to be immediately executed by Grbl. Echoes will not be
@@ -407,19 +407,19 @@ const int TOOL_LENGTH_OFFSET_AXIS = Z_AXIS;  // Default z-axis. Valid values are
 // limits or angle between neighboring block line move directions. This is useful for machines that can't
 // tolerate the tool dwelling for a split second, i.e. 3d printers or laser cutters. If used, this value
 // should not be much greater than zero or to the minimum value necessary for the machine to work.
-const double MINIMUM_JUNCTION_SPEED = 0.0;  // (mm/min)
+const double MINIMUM_JUNCTION_SPEED = 0.0; // (mm/min)
 
 // Sets the minimum feed rate the planner will allow. Any value below it will be set to this minimum
 // value. This also ensures that a planned motion always completes and accounts for any floating-point
 // round-off errors. Although not recommended, a lower value than 1.0 mm/min will likely work in smaller
 // machines, perhaps to 0.1mm/min, but your success may vary based on multiple factors.
-const double MINIMUM_FEED_RATE = 1.0;  // (mm/min)
+const double MINIMUM_FEED_RATE = 1.0; // (mm/min)
 
 // Number of arc generation iterations by small angle approximation before exact arc trajectory
 // correction with expensive sin() and cos() calcualtions. This parameter maybe decreased if there
 // are issues with the accuracy of the arc generations, or increased if arc execution is getting
 // bogged down by too many trig calculations.
-const int N_ARC_CORRECTION = 12;  // Integer (1-255)
+const int N_ARC_CORRECTION = 12; // Integer (1-255)
 
 // The arc G2/3 GCode standard is problematic by definition. Radius-based arcs have horrible numerical
 // errors when arc at semi-circles(pi) or full-circles(2*pi). Offset-based arcs are much more accurate
@@ -429,14 +429,14 @@ const int N_ARC_CORRECTION = 12;  // Integer (1-255)
 // This define value sets the machine epsilon cutoff to determine if the arc is a full-circle or not.
 // NOTE: Be very careful when adjusting this value. It should always be greater than 1.2e-7 but not too
 // much greater than this. The default setting should capture most, if not all, full arc error situations.
-const double ARC_ANGULAR_TRAVEL_EPSILON = 5E-7;  // Float (radians)
+const double ARC_ANGULAR_TRAVEL_EPSILON = 5E-7; // Float (radians)
 
 // Time delay increments performed during a dwell. The default value is set at 50ms, which provides
 // a maximum time delay of roughly 55 minutes, more than enough for most any application. Increasing
 // this delay will increase the maximum dwell time linearly, but also reduces the responsiveness of
 // run-time command executions, like status reports, since these are performed between each dwell
 // time step. Also, keep in mind that the Arduino delay timer is not very accurate for long delays.
-const int DWELL_TIME_STEP = 50;  // Integer (1-255) (milliseconds)
+const int DWELL_TIME_STEP = 50; // Integer (1-255) (milliseconds)
 
 // For test use only. This uses the ESP32's RMT peripheral to generate step pulses
 // It allows the use of the STEP_PULSE_DELAY (see below) and it automatically ends the
@@ -487,7 +487,7 @@ const int DWELL_TIME_STEP = 50;  // Integer (1-255) (milliseconds)
 // switch interrupt unblock a waiting task which will recheck the limit switch pins after
 // a short delay. Default disabled
 //#define ENABLE_SOFTWARE_DEBOUNCE // Default disabled. Uncomment to enable.
-const int DEBOUNCE_PERIOD = 32;  // in milliseconds default 32 microseconds
+const int DEBOUNCE_PERIOD = 32; // in milliseconds default 32 microseconds
 
 // Configures the position after a probing cycle during Grbl's check mode. Disabled sets
 // the position to the probe target, when enabled sets the position to the start position.
@@ -566,10 +566,10 @@ const int DEBOUNCE_PERIOD = 32;  // in milliseconds default 32 microseconds
 
 // Configure options for the parking motion, if enabled.
 #define PARKING_AXIS Z_AXIS                      // Define which axis that performs the parking motion
-const double PARKING_TARGET            = -5.0;   // Parking axis target. In mm, as machine coordinate.
-const double PARKING_RATE              = 800.0;  // Parking fast rate after pull-out in mm/min.
-const double PARKING_PULLOUT_RATE      = 250.0;  // Pull-out/plunge slow feed rate in mm/min.
-const double PARKING_PULLOUT_INCREMENT = 5.0;    // Spindle pull-out and plunge distance in mm. Incremental distance.
+const double PARKING_TARGET = -5.0; // Parking axis target. In mm, as machine coordinate.
+const double PARKING_RATE = 800.0; // Parking fast rate after pull-out in mm/min.
+const double PARKING_PULLOUT_RATE = 250.0; // Pull-out/plunge slow feed rate in mm/min.
+const double PARKING_PULLOUT_INCREMENT = 5.0; // Spindle pull-out and plunge distance in mm. Incremental distance.
 // Must be positive value or equal to zero.
 
 // Enables a special set of M-code commands that enables and disables the parking motion.
@@ -600,7 +600,7 @@ const double PARKING_PULLOUT_INCREMENT = 5.0;    // Spindle pull-out and plunge 
 #define N_PIECES 4  // Integer (1-4). Number of piecewise lines used in script solution.
 #define RPM_MAX  11686.4  // Max RPM of model. $30 > RPM_MAX will be limited to RPM_MAX.
 #define RPM_MIN  202.5    // Min RPM of model. $31 < RPM_MIN will be limited to RPM_MIN.
-*/
+ */
 
 const int N_PIECES = 3;
 

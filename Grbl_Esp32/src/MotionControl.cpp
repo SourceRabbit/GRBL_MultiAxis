@@ -31,10 +31,15 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define DIR_POSITIV     0
-#define DIR_NEGATIV     1
+#define DIR_POSITIVE     0
+#define DIR_NEGATIVE     1
 
 SquaringMode ganged_mode = SquaringMode::Dual;
+
+static float previous_targets[MAX_N_AXIS] = {0.0};
+static float backlash_added_to_axis[MAX_N_AXIS] = {0.0};
+static uint8_t target_directions[MAX_N_AXIS] = {DIR_NEGATIVE};
+
 
 // this allows kinematics to be used.
 
@@ -53,8 +58,6 @@ void mc_line_kins(float* target, plan_line_data_t* pl_data, float* position) {
 // segments, must pass through this routine before being passed to the planner. The seperation of
 // mc_line and plan_buffer_line is done primarily to place non-planner-type functions from being
 // in the planner and to let backlash compensation or canned cycle integration simple and direct.
-static float target_prev[MAX_N_AXIS] = {0.0};
-static uint8_t dir_negative[MAX_N_AXIS] = {DIR_NEGATIV};
 
 void mc_line(float* target, plan_line_data_t* pl_data) {
     // If enabled, check for soft limit violations. Placed here all line motions are picked up
@@ -74,26 +77,27 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
     // Backlash compensation
     for (int i = 0; i < MAX_N_AXIS; i++) {
         if (axis_settings[i]->backlash->get() > 0) {
-
-            if (target[i] > target_prev[i]) {
+            if (target[i] > previous_targets[i]) {
                 // The Machine is moving "positive" compared to previous move
                 // If the last move was "negative" add backlash compensation to the target
-                if (dir_negative[i] == DIR_NEGATIV) {
-                    dir_negative[i] = DIR_POSITIV;
+                if (target_directions[i] == DIR_NEGATIVE) {
+                    target_directions[i] = DIR_POSITIVE;
                     target[i] = target[i] + axis_settings[i]->backlash->get();
+                    //backlash_added_to_axis[i] = axis_settings[i]->backlash->get();
                 }
             }// Move negative
-            else if (target[i] < target_prev[i]) {
+            else if (target[i] < previous_targets[i]) {
                 // The Machine is moving "negative" compared to previous move
                 // If the last move was "positive" add backlash compensation to the target
-                if (dir_negative[i] == DIR_POSITIV) {
-                    dir_negative[i] = DIR_NEGATIV;
+                if (target_directions[i] == DIR_POSITIVE) {
+                    target_directions[i] = DIR_NEGATIVE;
                     target[i] = target[i] - axis_settings[i]->backlash->get();
+                    //backlash_added_to_axis[i] = -axis_settings[i]->backlash->get();
                 }
             }
 
             // Update previous target to current target
-            target_prev[i] = target[i];
+            previous_targets[i] = target[i];
         }
     }
 
