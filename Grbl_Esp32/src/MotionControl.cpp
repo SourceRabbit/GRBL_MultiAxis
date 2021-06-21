@@ -75,7 +75,6 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
     // Backlash compensation
     for (int i = 0; i < MAX_N_AXIS; i++) {
         if (axis_settings[i]->backlash->get() > 0) {
-
             if (target[i] > previous_targets[i]) {
                 // The Machine is moving "positive" compared to previous move
                 // If the last move was "negative" add backlash compensation to the target

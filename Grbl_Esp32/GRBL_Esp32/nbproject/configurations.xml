@@ -43,8 +43,6 @@
         <in>WifiConfig.cpp</in>
         <in>WifiServices.cpp</in>
       </df>
-      <in>Backlash.cpp</in>
-      <in>Backlash.h</in>
       <in>CoolantControl.cpp</in>
       <in>CustomCode.cpp</in>
       <in>Error.cpp</in>
@@ -105,10 +103,6 @@
           <preBuildCommand></preBuildCommand>
         </preBuild>
       </makefileType>
-      <item path="../src/Backlash.cpp" ex="false" tool="0" flavor2="0">
-      </item>
-      <item path="../src/Backlash.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="../src/CoolantControl.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../src/CustomCode.cpp" ex="false" tool="1" flavor2="0">
