@@ -39,7 +39,6 @@ SquaringMode ganged_mode = SquaringMode::Dual;
 static float previous_targets[MAX_N_AXIS] = {0.0};
 static uint8_t target_directions[MAX_N_AXIS] = {DIR_NEGATIVE};
 
-
 // this allows kinematics to be used.
 
 void mc_line_kins(float* target, plan_line_data_t* pl_data, float* position) {
@@ -76,20 +75,23 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
     // Backlash compensation
     for (int i = 0; i < MAX_N_AXIS; i++) {
         if (axis_settings[i]->backlash->get() > 0) {
+
             if (target[i] > previous_targets[i]) {
                 // The Machine is moving "positive" compared to previous move
                 // If the last move was "negative" add backlash compensation to the target
                 if (target_directions[i] == DIR_NEGATIVE) {
                     target_directions[i] = DIR_POSITIVE;
                     target[i] = target[i] + axis_settings[i]->backlash->get();
+                    backlash_compensation_to_remove_from_mpos[i] += axis_settings[i]->backlash->get();
                 }
             }// Move negative
             else if (target[i] < previous_targets[i]) {
                 // The Machine is moving "negative" compared to previous move
-                // If the last move was "positive" add backlash compensation to the target
+                // If the last move was "positive" remove backlash compensation from the target
                 if (target_directions[i] == DIR_POSITIVE) {
                     target_directions[i] = DIR_NEGATIVE;
                     target[i] = target[i] - axis_settings[i]->backlash->get();
+                    backlash_compensation_to_remove_from_mpos[i] -= axis_settings[i]->backlash->get();
                 }
             }
 
@@ -126,6 +128,8 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
             break;
         }
     } while (1);
+
+
     // Plan and queue motion into planner buffer
     // uint8_t plan_status; // Not used in normal operation.
     plan_buffer_line(target, pl_data);

@@ -3,8 +3,8 @@
   Part of Grbl
   Copyright (c) 2014-2016 Sungeun K. Jeon for Gnea Research LLC
 
-	2018 -	Bart Dring This file was modified for use on the ESP32
-					CPU. Do not use this with Grbl for atMega328P
+        2018 -	Bart Dring This file was modified for use on the ESP32
+                                        CPU. Do not use this with Grbl for atMega328P
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -16,34 +16,37 @@
   GNU General Public License for more details.
   You should have received a copy of the GNU General Public License
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 #include "Grbl.h"
 #include "Config.h"
 
 // Declare system global variable structure
-system_t               sys;
-int32_t                sys_position[MAX_N_AXIS];        // Real-time machine (aka home) position vector in steps.
-int32_t                sys_probe_position[MAX_N_AXIS];  // Last probe position in machine coordinates and steps.
-volatile Probe         sys_probe_state;                 // Probing state value.  Used to coordinate the probing cycle with stepper ISR.
-volatile ExecState     sys_rt_exec_state;  // Global realtime executor bitflag variable for state management. See EXEC bitmasks.
-volatile ExecAlarm     sys_rt_exec_alarm;  // Global realtime executor bitflag variable for setting various alarms.
-volatile ExecAccessory sys_rt_exec_accessory_override;  // Global realtime executor bitflag variable for spindle/coolant overrides.
-volatile bool          cycle_stop;                      // For state transitions, instead of bitflag
+float backlash_compensation_to_remove_from_mpos[MAX_N_AXIS];
+system_t sys;
+int32_t sys_position[MAX_N_AXIS]; // Real-time machine (aka home) position vector in steps.
+int32_t sys_probe_position[MAX_N_AXIS]; // Last probe position in machine coordinates and steps.
+volatile Probe sys_probe_state; // Probing state value.  Used to coordinate the probing cycle with stepper ISR.
+volatile ExecState sys_rt_exec_state; // Global realtime executor bitflag variable for state management. See EXEC bitmasks.
+volatile ExecAlarm sys_rt_exec_alarm; // Global realtime executor bitflag variable for setting various alarms.
+volatile ExecAccessory sys_rt_exec_accessory_override; // Global realtime executor bitflag variable for spindle/coolant overrides.
+volatile bool cycle_stop; // For state transitions, instead of bitflag
 #ifdef DEBUG
 volatile bool sys_rt_exec_debug;
 #endif
-volatile Percent sys_rt_f_override;  // Global realtime executor feedrate override percentage
-volatile Percent sys_rt_r_override;  // Global realtime executor rapid override percentage
-volatile Percent sys_rt_s_override;  // Global realtime executor spindle override percentage
+volatile Percent sys_rt_f_override; // Global realtime executor feedrate override percentage
+volatile Percent sys_rt_r_override; // Global realtime executor rapid override percentage
+volatile Percent sys_rt_s_override; // Global realtime executor spindle override percentage
 
-UserOutput::AnalogOutput*  myAnalogOutputs[MaxUserDigitalPin];
+UserOutput::AnalogOutput* myAnalogOutputs[MaxUserDigitalPin];
 UserOutput::DigitalOutput* myDigitalOutputs[MaxUserDigitalPin];
 
-xQueueHandle control_sw_queue;    // used by control switch debouncing
-bool         debouncing = false;  // debouncing in process
+xQueueHandle control_sw_queue; // used by control switch debouncing
+bool debouncing = false; // debouncing in process
 
-void system_ini() {  // Renamed from system_init() due to conflict with esp32 files
+void system_ini() { // Renamed from system_init() due to conflict with esp32 files
+
+
     // setup control inputs
 
 #ifdef CONTROL_SAFETY_DOOR_PIN
@@ -88,13 +91,13 @@ void system_ini() {  // Renamed from system_init() due to conflict with esp32 fi
 #endif
 #ifdef ENABLE_CONTROL_SW_DEBOUNCE
     // setup task used for debouncing
-    control_sw_queue = xQueueCreate(10, sizeof(int));
+    control_sw_queue = xQueueCreate(10, sizeof (int));
     xTaskCreate(controlCheckTask,
-                "controlCheckTask",
-                3096,
-                NULL,
-                5,  // priority
-                NULL);
+            "controlCheckTask",
+            3096,
+            NULL,
+            5, // priority
+            NULL);
 #endif
 
     //customize pin definition if needed
@@ -117,11 +120,12 @@ void system_ini() {  // Renamed from system_init() due to conflict with esp32 fi
 
 #ifdef ENABLE_CONTROL_SW_DEBOUNCE
 // this is the debounce task
+
 void controlCheckTask(void* pvParameters) {
     while (true) {
         int evt;
-        xQueueReceive(control_sw_queue, &evt, portMAX_DELAY);  // block until receive queue
-        vTaskDelay(CONTROL_SW_DEBOUNCE_PERIOD);                // delay a while
+        xQueueReceive(control_sw_queue, &evt, portMAX_DELAY); // block until receive queue
+        vTaskDelay(CONTROL_SW_DEBOUNCE_PERIOD); // delay a while
         ControlPins pins = system_control_get_state();
         if (pins.value) {
             system_exec_control_pin(pins);
@@ -129,9 +133,9 @@ void controlCheckTask(void* pvParameters) {
         debouncing = false;
 
         static UBaseType_t uxHighWaterMark = 0;
-#    ifdef DEBUG_TASK_STACK
+#ifdef DEBUG_TASK_STACK
         reportTaskStackSize(uxHighWaterMark);
-#    endif
+#endif
     }
 }
 #endif
@@ -140,7 +144,7 @@ void IRAM_ATTR isr_control_inputs() {
 #ifdef ENABLE_CONTROL_SW_DEBOUNCE
     // we will start a task that will recheck the switches after a small delay
     int evt;
-    if (!debouncing) {  // prevent resending until debounce is done
+    if (!debouncing) { // prevent resending until debounce is done
         debouncing = true;
         xQueueSendFromISR(control_sw_queue, &evt, NULL);
     }
@@ -151,11 +155,12 @@ void IRAM_ATTR isr_control_inputs() {
 }
 
 // Returns if safety door is ajar(T) or closed(F), based on pin state.
+
 uint8_t system_check_safety_door_ajar() {
 #ifdef ENABLE_SAFETY_DOOR_INPUT_PIN
     return system_control_get_state().bit.safetyDoor;
 #else
-    return false;  // Input pin not enabled, so just return that it's closed.
+    return false; // Input pin not enabled, so just return that it's closed.
 #endif
 }
 
@@ -164,23 +169,32 @@ void system_flag_wco_change() {
     protocol_buffer_synchronize();
 #endif
     sys.report_wco_counter = 0;
+
+    // RESET BACKLASH
+    for (int i = 0; i < MAX_N_AXIS; i++) {
+        backlash_compensation_to_remove_from_mpos[i] = 0;
+    }
 }
 
 // Returns machine position of axis 'idx'. Must be sent a 'step' array.
 // NOTE: If motor steps and machine position are not in the same coordinate frame, this function
 //   serves as a central place to compute the transformation.
+
 float system_convert_axis_steps_to_mpos(int32_t* steps, uint8_t idx) {
     float pos;
     float steps_per_mm = axis_settings[idx]->steps_per_mm->get();
-    pos                = steps[idx] / steps_per_mm;
+    pos = steps[idx] / steps_per_mm;
     return pos;
 }
 
 void system_convert_array_steps_to_mpos(float* position, int32_t* steps) {
     uint8_t idx;
-    auto    n_axis = number_axis->get();
+    auto n_axis = number_axis->get();
     for (idx = 0; idx < n_axis; idx++) {
         position[idx] = system_convert_axis_steps_to_mpos(steps, idx);
+
+        // Remove any backlash from the position
+        position[idx] = position[idx] - backlash_compensation_to_remove_from_mpos[idx];
     }
     return;
 }
@@ -188,6 +202,7 @@ void system_convert_array_steps_to_mpos(float* position, int32_t* steps) {
 // Returns control pin state as a uint8 bitfield. Each bit indicates the input pin state, where
 // triggered is 1 and not triggered is 0. Invert mask is applied. Bitfield organization is
 // defined by the ControlPin in System.h.
+
 ControlPins system_control_get_state() {
     ControlPins defined_pins;
     defined_pins.value = 0;
@@ -250,6 +265,7 @@ ControlPins system_control_get_state() {
 }
 
 // execute the function of the control pin
+
 void system_exec_control_pin(ControlPins pins) {
     if (pins.bit.reset) {
         grbl_msg_sendf(CLIENT_SERIAL, MsgLevel::Info, "Reset via control pin");
@@ -261,13 +277,13 @@ void system_exec_control_pin(ControlPins pins) {
     } else if (pins.bit.safetyDoor) {
         sys_rt_exec_state.bit.safetyDoor = true;
     } else if (pins.bit.macro0) {
-        user_defined_macro(0);  // function must be implemented by user
+        user_defined_macro(0); // function must be implemented by user
     } else if (pins.bit.macro1) {
-        user_defined_macro(1);  // function must be implemented by user
+        user_defined_macro(1); // function must be implemented by user
     } else if (pins.bit.macro2) {
-        user_defined_macro(2);  // function must be implemented by user
+        user_defined_macro(2); // function must be implemented by user
     } else if (pins.bit.macro3) {
-        user_defined_macro(3);  // function must be implemented by user
+        user_defined_macro(3); // function must be implemented by user
     }
 }
 
@@ -278,11 +294,13 @@ void sys_digital_all_off() {
 }
 
 // io_num is the virtual digital pin#
+
 bool sys_set_digital(uint8_t io_num, bool turnOn) {
     return myDigitalOutputs[io_num]->set_level(turnOn);
 }
 
 // Turn off all analog outputs
+
 void sys_analog_all_off() {
     for (uint8_t io_num = 0; io_num < MaxUserDigitalPin; io_num++) {
         myAnalogOutputs[io_num]->set_level(0);
@@ -290,8 +308,9 @@ void sys_analog_all_off() {
 }
 
 // io_num is the virtual analog pin#
+
 bool sys_set_analog(uint8_t io_num, float percent) {
-    auto     analog    = myAnalogOutputs[io_num];
+    auto analog = myAnalogOutputs[io_num];
     uint32_t numerator = percent / 100.0 * analog->denominator();
     return analog->set_level(numerator);
 }
@@ -304,10 +323,10 @@ bool sys_set_analog(uint8_t io_num, float percent) {
 
     There are still possible issues if requested channels use different frequencies
     TODO: Make this more robust.
-*/
+ */
 int8_t sys_get_next_PWM_chan_num() {
-    static uint8_t next_PWM_chan_num = 2;  // start at 2 to avoid spindle
-    if (next_PWM_chan_num < 8) {           // 7 is the max PWM channel number
+    static uint8_t next_PWM_chan_num = 2; // start at 2 to avoid spindle
+    if (next_PWM_chan_num < 8) { // 7 is the max PWM channel number
         return next_PWM_chan_num++;
     } else {
         grbl_msg_sendf(CLIENT_SERIAL, MsgLevel::Error, "Error: out of PWM channels");
@@ -316,22 +335,23 @@ int8_t sys_get_next_PWM_chan_num() {
 }
 
 /*
-		Calculate the highest precision of a PWM based on the frequency in bits
+                Calculate the highest precision of a PWM based on the frequency in bits
 
-		80,000,000 / freq = period
-		determine the highest precision where (1 << precision) < period
-	*/
+                80,000,000 / freq = period
+                determine the highest precision where (1 << precision) < period
+ */
 uint8_t sys_calc_pwm_precision(uint32_t freq) {
     uint8_t precision = 0;
 
     // increase the precision (bits) until it exceeds allow by frequency the max or is 16
-    while ((1 << precision) < (uint32_t)(80000000 / freq) && precision <= 16) {  // TODO is there a named value for the 80MHz?
+    while ((1 << precision) < (uint32_t) (80000000 / freq) && precision <= 16) { // TODO is there a named value for the 80MHz?
         precision++;
     }
 
     return precision - 1;
 }
-void __attribute__((weak)) user_defined_macro(uint8_t index) {
+
+void __attribute__ ((weak)) user_defined_macro(uint8_t index) {
     // must be in Idle
     if (sys.state != State::Idle) {
         grbl_msg_sendf(CLIENT_SERIAL, MsgLevel::Info, "Macro button only permitted in idle");
@@ -339,7 +359,7 @@ void __attribute__((weak)) user_defined_macro(uint8_t index) {
     }
 
     String user_macro;
-    char   line[255];
+    char line[255];
     switch (index) {
         case 0:
             user_macro = user_macro0->get();
