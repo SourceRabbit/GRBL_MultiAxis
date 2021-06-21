@@ -37,7 +37,6 @@
 SquaringMode ganged_mode = SquaringMode::Dual;
 
 static float previous_targets[MAX_N_AXIS] = {0.0};
-static float backlash_added_to_axis[MAX_N_AXIS] = {0.0};
 static uint8_t target_directions[MAX_N_AXIS] = {DIR_NEGATIVE};
 
 
@@ -83,7 +82,6 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
                 if (target_directions[i] == DIR_NEGATIVE) {
                     target_directions[i] = DIR_POSITIVE;
                     target[i] = target[i] + axis_settings[i]->backlash->get();
-                    //backlash_added_to_axis[i] = axis_settings[i]->backlash->get();
                 }
             }// Move negative
             else if (target[i] < previous_targets[i]) {
@@ -92,7 +90,6 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
                 if (target_directions[i] == DIR_POSITIVE) {
                     target_directions[i] = DIR_NEGATIVE;
                     target[i] = target[i] - axis_settings[i]->backlash->get();
-                    //backlash_added_to_axis[i] = -axis_settings[i]->backlash->get();
                 }
             }
 
