@@ -633,9 +633,25 @@ void report_realtime_status(uint8_t client) {
     // Report position
     if (bit_istrue(status_mask->get(), RtStatus::Position)) {
         calc_mpos(print_position);
+
+        // Remove any backlash from the position
+        for (int i = 0; i < MAX_N_AXIS; i++) {
+            //print_position[i] = print_position[i] + backlash_compensation_to_remove_from_mpos[i];
+        }
+
+
+        // Remove any backlash from the position
+       
+
         strcat(status, "|MPos:");
     } else {
         calc_wpos(print_position);
+
+        // Remove any backlash from the position
+        for (int i = 0; i < MAX_N_AXIS; i++) {
+            //print_position[i] = print_position[i] + backlash_compensation_to_remove_from_mpos[i];
+        }
+
         strcat(status, "|WPos:");
     }
     report_util_axis_values(print_position, temp);

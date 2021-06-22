@@ -192,9 +192,6 @@ void system_convert_array_steps_to_mpos(float* position, int32_t* steps) {
     auto n_axis = number_axis->get();
     for (idx = 0; idx < n_axis; idx++) {
         position[idx] = system_convert_axis_steps_to_mpos(steps, idx);
-
-        // Remove any backlash from the position
-        position[idx] = position[idx] - backlash_compensation_to_remove_from_mpos[idx];
     }
     return;
 }
