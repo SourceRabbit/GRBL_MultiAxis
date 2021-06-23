@@ -9,6 +9,7 @@
 
 #define DIR_POSITIVE     0
 #define DIR_NEGATIVE     1
+#define DIR_NEUTRAL      2
 
 // This array holds the backlash that has been added to each axes
 // in mm. The system_convert_axis_steps_to_mpos uses this array to remove the backlash added 
@@ -21,7 +22,7 @@ static uint8_t target_directions[MAX_N_AXIS] = {DIR_NEGATIVE};
 void backlash_ini() {
     for (int i = 0; i < MAX_N_AXIS; i++) {
         previous_targets[i] = 0.000;
-        target_directions[i] = DIR_NEGATIVE;
+        target_directions[i] = DIR_NEUTRAL;
     }
 }
 
@@ -33,7 +34,7 @@ float backlash_CompensateBacklashToTarget(int axis, float target) {
         if (target > previous_targets[axis]) {
             // The Machine is moving "positive" compared to previous move
             // If the last move was "negative" add backlash compensation to the target
-            if (target_directions[axis] == DIR_NEGATIVE) {
+            if (target_directions[axis] != DIR_POSITIVE) {
                 target = target + axis_settings[axis]->backlash->get();
                 backlash_compensation_to_remove_from_mpos[axis] += axis_settings[axis]->backlash->get();
             }
@@ -43,7 +44,7 @@ float backlash_CompensateBacklashToTarget(int axis, float target) {
         } else if (target < previous_targets[axis]) {
             // The Machine is moving "negative" compared to previous move
             // If the last move was "positive" remove backlash compensation from the target
-            if (target_directions[axis] == DIR_POSITIVE) {
+            if (target_directions[axis] != DIR_NEGATIVE) {
                 target = target - axis_settings[axis]->backlash->get();
                 backlash_compensation_to_remove_from_mpos[axis] -= axis_settings[axis]->backlash->get();
             }
