@@ -62,6 +62,7 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
     if (sys.state == State::CheckMode) {
         return;
     }
+<<<<<<< Updated upstream
     // NOTE: Backlash compensation may be installed here. It will need direction info to track when
     // to insert a backlash line motion(s) before the intended line motion and will require its own
     // plan_check_full_buffer() and check for system abort loop. Also for position reporting
@@ -75,6 +76,19 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
     // indicates to Grbl what is a backlash compensation motion, so that Grbl executes the move but
     // doesn't update the machine position values. Since the position values used by the g-code
     // parser and planner are separate from the system machine positions, this is doable.
+=======
+
+    // Compensate backlash for each axis and 
+    backlash_CompensateBacklashToTargetV2(target, pl_data);
+
+    // Compensate backlash for each axis and 
+    /*for (int i = 0; i < MAX_N_AXIS; i++) {
+        target[i] = backlash_CompensateBacklashToTarget(i, target[i]);
+    }*/
+
+
+
+>>>>>>> Stashed changes
     // If the buffer is full: good! That means we are well ahead of the robot.
     // Remain in this loop until there is room in the buffer.
     do {

@@ -42,8 +42,13 @@ void grbl_init() {
     stepper_init();   // Configure stepper pins and interrupt timers
     system_ini();     // Configure pinout pins and pin-change interrupt (Renamed due to conflict with esp32 files)
     init_motors();
+<<<<<<< Updated upstream
     memset(sys_position, 0, sizeof(sys_position));  // Clear machine position.
     machine_init();                                 // weak definition in Grbl.cpp does nothing
+=======
+    memset(sys_position, 0, sizeof (sys_position)); // Clear machine position.
+    machine_init(); // weak definition in Grbl.cpp does nothing
+>>>>>>> Stashed changes
     // Initialize system state.
 #ifdef FORCE_INITIALIZATION_ALARM
     // Force Grbl into an ALARM state upon a power-cycle or hard reset.
@@ -83,8 +88,13 @@ static void reset_variables() {
     sys.spindle_speed_ovr = SpindleSpeedOverride::Default;      // Set to 100%
     memset(sys_probe_position, 0, sizeof(sys_probe_position));  // Clear probe position.
 
+<<<<<<< Updated upstream
     sys_probe_state                      = Probe::Off;
     sys_rt_exec_state.value              = 0;
+=======
+    sys_probe_state = Probe::Off;
+    sys_rt_exec_state.value = 0;
+>>>>>>> Stashed changes
     sys_rt_exec_accessory_override.value = 0;
     sys_rt_exec_alarm                    = ExecAlarm::None;
     cycle_stop                           = false;

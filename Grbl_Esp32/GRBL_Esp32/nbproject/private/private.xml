@@ -7,4 +7,23 @@
         <activeConfTypeElem>0</activeConfTypeElem>
         <activeConfIndexElem>0</activeConfIndexElem>
     </data>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>file:/C:/Development/_public/Grbl_Esp32/Grbl_Esp32/src/MotionControl.cpp</url>
+            <bookmark id="1">
+                <name/>
+                <line>54</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Development/_public/Grbl_Esp32/Grbl_Esp32/src/Planner.h</file>
+            <file>file:/C:/Development/_public/Grbl_Esp32/Grbl_Esp32/src/Motors/Dynamixel2.cpp</file>
+            <file>file:/C:/Development/_public/Grbl_Esp32/Grbl_Esp32/src/Backlash.cpp</file>
+            <file>file:/C:/Development/_public/Grbl_Esp32/Grbl_Esp32/src/Planner.cpp</file>
+            <file>file:/C:/Development/_public/Grbl_Esp32/Grbl_Esp32/src/Motors/TrinamicDriver.cpp</file>
+        </group>
+    </open-files>
 </project-private>

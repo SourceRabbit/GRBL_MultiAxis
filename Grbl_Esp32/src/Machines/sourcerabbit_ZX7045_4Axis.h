@@ -31,10 +31,23 @@
 
 
 // TRAVEL
+<<<<<<< Updated upstream
 #define DEFAULT_X_MAX_TRAVEL                500.0   // $130 mm 
 #define DEFAULT_Y_MAX_TRAVEL                220.0   // $131 mm
 #define DEFAULT_Z_MAX_TRAVEL                272.0   // $132 mm
 #define DEFAULT_A_MAX_TRAVEL                0       // $133 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
+=======
+#define DEFAULT_X_MAX_TRAVEL                500.0       // $130 mm 
+#define DEFAULT_Y_MAX_TRAVEL                220.0       // $131 mm
+#define DEFAULT_Z_MAX_TRAVEL                270.0       // $132 mm
+#define DEFAULT_A_MAX_TRAVEL                0           // $133 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
+
+// Backlash
+#define DEFAULT_X_BACKLASH                  0.072       // $180 mm 
+#define DEFAULT_Y_BACKLASH                  0.06        // $181 mm
+#define DEFAULT_Z_BACKLASH                  0.065       // $182 mm
+#define DEFAULT_A_BACKLASH                  0           // $183 mm (NOTE: We set this to zero in order to avoid Soft Limits for this Axis)
+>>>>>>> Stashed changes
 
 // SPEEDS AND ACCELLERATIONS
 // DRIVERS MICROSTEPPING IS SET to x10
