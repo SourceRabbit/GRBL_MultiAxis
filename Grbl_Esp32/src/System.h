@@ -138,7 +138,6 @@ union ControlPins {
 // NOTE: These position variables may need to be declared as volatiles, if problems arise.
 extern int32_t sys_position[MAX_N_AXIS]; // Real-time machine (aka home) position vector in steps.
 extern int32_t sys_probe_position[MAX_N_AXIS]; // Last probe position in machine coordinates and steps.
-extern float backlash_compensation_to_remove_from_mpos[MAX_N_AXIS]; // Backlash purposes...
 
 extern volatile Probe sys_probe_state; // Probing state value.  Used to coordinate the probing cycle with stepper ISR.
 extern volatile ExecState sys_rt_exec_state; // Global realtime executor bitflag variable for state management. See EXEC bitmasks.

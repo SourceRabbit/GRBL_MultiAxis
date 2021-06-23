@@ -41,6 +41,7 @@ void grbl_init() {
     settings_init(); // Load Grbl settings from non-volatile storage
     stepper_init(); // Configure stepper pins and interrupt timers
     system_ini(); // Configure pinout pins and pin-change interrupt (Renamed due to conflict with esp32 files)
+    backlash_ini();
     init_motors();
     memset(sys_position, 0, sizeof (sys_position)); // Clear machine position.
     memset(backlash_compensation_to_remove_from_mpos, 0, sizeof (backlash_compensation_to_remove_from_mpos)); // Clear Backlash

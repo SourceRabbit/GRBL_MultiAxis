@@ -1,7 +1,7 @@
 #pragma once
 
 
-#define MACHINE_NAME                        "ΖΧ7045"
+#define MACHINE_NAME                        "ZX7045"
 
 #ifdef N_AXIS
 #undef N_AXIS

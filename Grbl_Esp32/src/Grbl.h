@@ -50,6 +50,7 @@ const char* const GRBL_VERSION_BUILD = "20210419";
 #include "Planner.h"
 #include "CoolantControl.h"
 #include "Limits.h"
+#include "Backlash.h"
 #include "MotionControl.h"
 #include "Protocol.h"
 #include "Uart.h"

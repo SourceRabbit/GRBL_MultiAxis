@@ -31,13 +31,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#define DIR_POSITIVE     0
-#define DIR_NEGATIVE     1
 
 SquaringMode ganged_mode = SquaringMode::Dual;
-
-static float previous_targets[MAX_N_AXIS] = {0.0};
-static uint8_t target_directions[MAX_N_AXIS] = {DIR_NEGATIVE};
 
 // this allows kinematics to be used.
 
@@ -71,49 +66,13 @@ void mc_line(float* target, plan_line_data_t* pl_data) {
         return;
     }
 
-
-    // Backlash compensation
+    // Compensate backlash for each axis and target
     for (int i = 0; i < MAX_N_AXIS; i++) {
-        if (axis_settings[i]->backlash->get() > 0) {
-            if (target[i] > previous_targets[i]) {
-                // The Machine is moving "positive" compared to previous move
-                // If the last move was "negative" add backlash compensation to the target
-                if (target_directions[i] == DIR_NEGATIVE) {
-                    target_directions[i] = DIR_POSITIVE;
-                    target[i] = target[i] + axis_settings[i]->backlash->get();
-                    backlash_compensation_to_remove_from_mpos[i] += axis_settings[i]->backlash->get();
-                }
-            }// Move negative
-            else if (target[i] < previous_targets[i]) {
-                // The Machine is moving "negative" compared to previous move
-                // If the last move was "positive" remove backlash compensation from the target
-                if (target_directions[i] == DIR_POSITIVE) {
-                    target_directions[i] = DIR_NEGATIVE;
-                    target[i] = target[i] - axis_settings[i]->backlash->get();
-                    backlash_compensation_to_remove_from_mpos[i] -= axis_settings[i]->backlash->get();
-                }
-            }
-
-            // Update previous target to current target
-            previous_targets[i] = target[i];
-        }
+        target[i] = backlash_CompensateBacklashToTarget(i, target[i]);
     }
 
 
 
-    // NOTE: Backlash compensation may be installed here. It will need direction info to track when
-    // to insert a backlash line motion(s) before the intended line motion and will require its own
-    // plan_check_full_buffer() and check for system abort loop. Also for position reporting
-    // backlash steps will need to be also tracked, which will need to be kept at a system level.
-    // There are likely some other things that will need to be tracked as well. However, we feel
-    // that backlash compensation should NOT be handled by Grbl itself, because there are a myriad
-    // of ways to implement it and can be effective or ineffective for different CNC machines. This
-    // would be better handled by the interface as a post-processor task, where the original g-code
-    // is translated and inserts backlash motions that best suits the machine.
-    // NOTE: Perhaps as a middle-ground, all that needs to be sent is a flag or special command that
-    // indicates to Grbl what is a backlash compensation motion, so that Grbl executes the move but
-    // doesn't update the machine position values. Since the position values used by the g-code
-    // parser and planner are separate from the system machine positions, this is doable.
     // If the buffer is full: good! That means we are well ahead of the robot.
     // Remain in this loop until there is room in the buffer.
     do {

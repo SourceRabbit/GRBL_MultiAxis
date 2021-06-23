@@ -22,7 +22,6 @@
 #include "Config.h"
 
 // Declare system global variable structure
-float backlash_compensation_to_remove_from_mpos[MAX_N_AXIS];
 system_t sys;
 int32_t sys_position[MAX_N_AXIS]; // Real-time machine (aka home) position vector in steps.
 int32_t sys_probe_position[MAX_N_AXIS]; // Last probe position in machine coordinates and steps.
@@ -171,9 +170,7 @@ void system_flag_wco_change() {
     sys.report_wco_counter = 0;
 
     // RESET BACKLASH
-    for (int i = 0; i < MAX_N_AXIS; i++) {
-        backlash_compensation_to_remove_from_mpos[i] = 0;
-    }
+    backlash_ResetBacklashCompensationAddedToAxis();
 }
 
 // Returns machine position of axis 'idx'. Must be sent a 'step' array.
@@ -183,7 +180,7 @@ void system_flag_wco_change() {
 float system_convert_axis_steps_to_mpos(int32_t* steps, uint8_t idx) {
     float pos;
     float steps_per_mm = axis_settings[idx]->steps_per_mm->get();
-    pos = steps[idx] / steps_per_mm;
+    pos = (steps[idx] / steps_per_mm) - backlash_compensation_to_remove_from_mpos[idx];
     return pos;
 }
 
