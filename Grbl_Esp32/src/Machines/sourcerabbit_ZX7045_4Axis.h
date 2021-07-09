@@ -24,8 +24,8 @@
 #define DEFAULT_HARD_LIMIT_ENABLE           1
 #define DEFAULT_HOMING_ENABLE               1
 #define DEFAULT_HOMING_DIR_MASK             3           // $23 move positive dir Z, negative X,Y
-#define DEFAULT_HOMING_FEED_RATE            500.0       // $24 mm/min
-#define DEFAULT_HOMING_SEEK_RATE            2000.0      // $25 mm/min
+#define DEFAULT_HOMING_FEED_RATE            200.0       // $24 mm/min
+#define DEFAULT_HOMING_SEEK_RATE            2700.0      // $25 mm/min
 #define DEFAULT_HOMING_PULLOFF              2.0         // $27 
 
 
@@ -72,6 +72,11 @@
 #define STEPPERS_DISABLE_PIN    GPIO_NUM_15
 
 #define SPINDLE_TYPE            SpindleType::PWM 
+#define DEFAULT_SPINDLE_FREQ                3000
+#define DEFAULT_SPINDLE_RPM_MAX             2560
+#define DEFAULT_SPINDLE_RPM_MIN             200
+#define DEFAULT_SPINDLE_DELAY_SPINUP        1.5
+#define DEFAULT_SPINDLE_DELAY_SPINDOWN      0.5
 #define SPINDLE_OUTPUT_PIN      GPIO_NUM_21
 #define SPINDLE_ENABLE_PIN      GPIO_NUM_2
 

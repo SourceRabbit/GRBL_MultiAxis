@@ -604,5 +604,5 @@ const double PARKING_PULLOUT_INCREMENT = 5.0; // Spindle pull-out and plunge dis
 
 const int N_PIECES = 3;
 
-const double RPM_MAX = 23935.2;
-const double RPM_MIN = 2412.2;
+const double RPM_MAX = 2560;
+const double RPM_MIN = 0;
