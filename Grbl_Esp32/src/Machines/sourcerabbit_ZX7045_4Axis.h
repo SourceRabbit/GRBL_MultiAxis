@@ -25,8 +25,8 @@
 #define DEFAULT_HARD_LIMIT_ENABLE           1
 #define DEFAULT_HOMING_ENABLE               1
 #define DEFAULT_HOMING_DIR_MASK             3       // $23 move positive dir Z, negative X,Y
-#define DEFAULT_HOMING_FEED_RATE            500.0   // $24 mm/min
-#define DEFAULT_HOMING_SEEK_RATE            2000.0  // $25 mm/min
+#define DEFAULT_HOMING_FEED_RATE            200.0   // $24 mm/min
+#define DEFAULT_HOMING_SEEK_RATE            2700.0  // $25 mm/min
 #define DEFAULT_HOMING_PULLOFF              2.0     // $27 
 
 
